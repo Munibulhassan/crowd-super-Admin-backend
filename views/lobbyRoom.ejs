@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    <script language="JavaScript">var players = "<%= data %>"</script>
+    <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"
+        integrity="sha384-7EyYLQZgWBi67fBtVxw60/OWl1kjsfrPFcaU0pp0nAh+i8FD068QogUvg85Ewy1k"
+        crossorigin="anonymous"></script>
+    <title>Pro Ludo Club</title>
+</head>
+
+<body>
+    <h3>Lobby Room</h3>
+
+    <ul id="playerList">
+        <% if (data.length>0 ) { %>
+            <% data.forEach((user)=> { %>
+                <li>
+                    <%= user.playerName %>
+                </li>
+                <% }); %>
+                    <% } %>
+    </ul>
+    <script type="text/javascript" src="./js/lobbyRoom.js"></script>
+
+
+</body>

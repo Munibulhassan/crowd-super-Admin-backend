@@ -1,0 +1,4 @@
+{
+    "DB": "mongodb://0.0.0.0/Crowd",
+    "origin": "http://localhost:4005"
+}
