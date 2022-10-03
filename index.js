@@ -36,7 +36,7 @@ var spinner = new Spinner("Connecting to database.. %s");
 spinner.start();
 
 mongoose
-    .connect("mongodb+srv://cluster0.cgxmzml.mongodb.net/myFirstDatabase" , {
+    .connect("mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority" , {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
