@@ -2,19 +2,17 @@
 const mongoose = require("mongoose");
 
 const VanueSchema = new mongoose.Schema({
-    name:{
+    venuename:{
         type: String,
         unique: true,
         required: true
     },
-	code:{
+	venuecode:{
         type: String,
         uppercase:true,
         required: true
     },
-	description:{
-        type: String,
-    },
+	
 }, {
     timestamps: true
 });

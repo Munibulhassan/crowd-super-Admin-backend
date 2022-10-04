@@ -4,14 +4,21 @@ const _ = require("lodash")
 class FA {
   async create(req, res) {
     try {
-      let { name } = req.body;
-      const dataExisted = await faService.Model.findOne({ name });
+      let { functionalarea } = req.body;
+      const dataExisted = await faService.Model.findOne({ functionalarea });
       if (dataExisted)
         return res.send({
           success: true,
           status: 200,
           msg: "FA already existed",
         });
+      const datacount = await faService.Model.find();
+      console.log(datacount.length)
+      req.body.facode = req.body.facode.toUpperCase()
+
+      req.body.rolecode = (req.body.facode + req.body.jobtype + (datacount.length+1)).toUpperCase()
+
+
 
       const data = await faService.Model.create(req.body);
 
@@ -50,7 +57,8 @@ class FA {
 
   async gets(req, res) {
     try {
-      let data = await faService.Model.find();
+      if(req.query){
+        let data = await faService.Model.find(req.query);
       if (data.length == 0)
         return res.send({
           success: true,
@@ -66,6 +74,23 @@ class FA {
         count: data.length,
         data,
       });
+      }else{
+      let data = await faService.Model.find();
+      if (data.length == 0)
+        return res.send({
+          success: true,
+          status: 200,
+          msg: "no data found",
+          data: [],
+        });
+
+      res.status(200).send({
+        status: 200,
+        success: true,
+        msg: "Fetched Successfully",
+        count: data.length,
+        data,
+      });}
     } catch (error) {
       res.status(500).send({ status: 500, success: false, msg: error.message });
     }
@@ -74,18 +99,29 @@ class FA {
   async update(req, res) {
     try {
       let { id } = req.params;
-      let data = await faService.Model.findById(id,{_id:0,name:1,code:1,description:1});
-      if(req.body.code){
-        req.body.code = req.body.code.toLowerCase();
-        data._doc.code=data._doc.code.toLowerCase();
+      let data = await faService.Model.findById(id);
+      const datacount = await faService.Model.find();
+      if (req.body.facode || req.body.jobtype) {
+
+        req.body.facode = req.body.facode.toUpperCase();
+        req.body.rolecode = (req.body.facode + req.body.jobtype + datacount.length).toUpperCase()
+      } else if (req.body.facode) {
+        req.body.facode = req.body.facode.toUpperCase();
+        req.body.rolecode = (req.body.facode + data.jobtype + datacount.length).toUpperCase()
       }
 
-      if(_.isEqual(data._doc,req.body)) return res.send({
+      // if(req.body.rolecode){
+      //   req.body.facode= req.body.facode.toUpperCase()
+
+
+      // }
+
+      if (_.isEqual(data._doc, req.body)) return res.send({
         success: true,
         status: 200,
         msg: "record is already upto date",
       });
-      
+
       if (!data)
         return res.send({
           success: true,
@@ -115,14 +151,14 @@ class FA {
   async delete(req, res) {
     try {
       let { id } = req.params;
-      let data = await faService.Model.findById(id,{_id:1});
+      let data = await faService.Model.findById(id, { _id: 1 });
       if (!data)
         return res.send({
           success: true,
           status: 403,
           msg: "invalid id",
         });
-         data = await faService.Model.findByIdAndRemove(id);
+      data = await faService.Model.findByIdAndRemove(id);
 
       res.status(200).send({
         status: 200,

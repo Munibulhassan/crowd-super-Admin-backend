@@ -3,17 +3,23 @@ const mongoose = require("mongoose");
 
 
 const FASchema = new mongoose.Schema({
-    name:{
+    functionalarea:{
         type: String,
         unique: true,
         required: true
     },
-	code:{
+	facode:{
         type: String,
         uppercase:true,
         required: true
     },
-	description:{
+    jobtype:{
+        type:String
+    },
+	jobtitle:{
+        type: String,
+    },
+    rolecode:{
         type: String,
     },
 

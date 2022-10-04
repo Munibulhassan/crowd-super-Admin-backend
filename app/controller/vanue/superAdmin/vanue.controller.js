@@ -4,14 +4,15 @@ class Vanues {
 
     async create(req, res) {
         try {
-          let { name } = req.body;
-          const dataExisted = await vanuesService.Model.findOne({ name });
+          let { venuename } = req.body;
+          const dataExisted = await vanuesService.Model.findOne({ venuename });
           if (dataExisted)
             return res.send({
               success: true,
               status: 200,
               msg: "department already existed",
             });
+req.body.venuecode= req.body.venuecode.toUpperCase()
     
           const data = await vanuesService.Model.create(req.body);
     
@@ -82,7 +83,11 @@ class Vanues {
               status: 403,
               msg: "invalid id",
             });
-    
+            if(req.body.venuecode){
+
+              req.body.venuecode= req.body.venuecode.toUpperCase()
+            }
+            
           data = await vanuesService.Model.findOneAndUpdate(
             { _id: id },
             req.body,
@@ -105,6 +110,7 @@ class Vanues {
       async delete(req, res) {
         try {
           let { id } = req.params;
+          
           let data = await vanuesService.Model.findById(id,{_id:1});
           if (!data)
             return res.send({
@@ -112,7 +118,8 @@ class Vanues {
               status: 403,
               msg: "invalid id",
             });
-             data = await vanuesService.Model.findByIdAndRemove(id);
+          
+          data = await vanuesService.Model.findByIdAndRemove(id);
     
           res.status(200).send({
             status: 200,
