@@ -1,42 +1,42 @@
-const multer = require('multer');
+const multer = require("multer");
 // const { storage } = require("./s3")
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        // console.log(file ,'fileFilrer')
+  destination: function (req, file, cb) {
+    cb(null, "./upload");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  },
+});
 
-        cb(null, './upload')
+let upload = (supportedFile) =>
+  multer({
+    fileFilter: (req, file, cb) => {
+      const arr = supportedFile;
+      const ext = file.mimetype.split("/")[1];
+      if (arr.includes(ext)) {
+        cb(null, true);
+      } else {
+        cb(
+          new Error(`File Is Not Supported. Supported Files ${supportedFile}`),
+          false
+        );
+      }
     },
-    filename: function (req, file, cb) {
-        // console.log(file ,'fileFilrer')
-        cb(null, Date.now() + file.originalname)
-    },
-})
+    limits: { fileSize: 1024 * 1024 * 1024 },
+    storage: storage,
+  });
 
-let upload =(supportedFile)=> multer(
-    {
-
-        fileFilter: (req, file, cb) => {
-            const arr = supportedFile
-            const ext = file.mimetype.split('/')[1]
-            if (arr.includes(ext)) {
-                cb(null, true)
-            } else {
-                cb(new Error(`File Is Not Supported. Supported Files ${supportedFile}`), false);
-            }
-        },
-        limits: { fileSize: 1024 * 1024 * 1024 },
-        storage: storage,
-    });
-
-let uploadxcelFile = upload(["vnd.openxmlformats-officedocument.spreadsheetml.sheet"])
+let uploadxcelFile = upload([
+  "vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+]);
 
 // module.exports.uploadMulti = upload.array('image');
 
-module.exports.uploadXcelFile = uploadxcelFile.single('uploadXcelFile');
+module.exports.uploadXcelFile = uploadxcelFile.single("uploadXcelFile");
 
 module.exports.multer = multer;
-
 
 // .array(['image', 4]
 // .fields([{ name: 'image', maxCount: 2 }]
@@ -45,7 +45,6 @@ module.exports.multer = multer;
 //for Single File
 // .single('image');
 // module.exports.upload = upload.single('image');
-
 
 // module.exports = multer({
 //     dest: 'upload/',

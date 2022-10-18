@@ -12,7 +12,7 @@ class AuthenticationMiddleware {
             compose()
                 // Attach user to request
                 .use((req, res, next) => {
-                    console.log(req.files)
+                    
                     // return
                     let token = req.headers['x-access-token'] || req.headers['authorization'];
                     if (!token)
@@ -29,7 +29,7 @@ class AuthenticationMiddleware {
                         req.auth = token;
                         next();
                     } catch (ex) {
-                        console.log("exception: " + ex);
+                        
                         res
                             .status(400)
                             .send({ success: false, msg: "Invalid token.", status: 400 });

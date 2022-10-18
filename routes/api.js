@@ -11,6 +11,10 @@ app.use("/superAdmin/position", require("../app/controller/position/superAdmin")
 app.use("/superAdmin/history", require("../app/controller/history/superAdmin"));
 app.use("/superAdmin/role", require("../app/controller/role/superAdmin"));
 app.use("/superAdmin/zone", require("../app/controller/zone/superAdmin"));
+app.use("/superAdmin/headcount", require("../app/controller/headcount/superAdmin"));
+
+
+
 
 
 

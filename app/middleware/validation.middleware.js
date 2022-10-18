@@ -217,7 +217,7 @@ module.exports = class ValidationMiddleware {
             .use(async (req, res, next) => {
                 try {
 
-                    console.log(moment(req.token.expireTime, "MMMM Do YYYY, h:mm:ss a").isAfter(moment(new Date(), "MMMM Do YYYY, h:mm:ss a")))
+                    
 
                     if (moment(req.token.expireTime, "MMMM Do YYYY, h:mm:ss a").isAfter(moment(new Date(), "MMMM Do YYYY, h:mm:ss a"))) next()
                     else {
@@ -229,8 +229,7 @@ module.exports = class ValidationMiddleware {
                 }
             })
             .use(async (req, res, next) => {
-                // console.log("ok", req.token)
-                // return
+                
                 if (req.body.newPassword == req.body.confirmPassword) {
                     next();
                 } else {

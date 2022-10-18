@@ -13,7 +13,16 @@ class ExcelToMongo {
     const fileName = req.file.filename;
     try {
       // return
-      let excelData = await excelToMongoConstant.excelToJsonConversion(fileName, folder, sheetName, skipRow)
+      const keysMapping = {
+        A: "functionalarea",
+        B: "facode",
+        C: "jobtype",
+        D: "jobtitle",
+        E: "venuename",
+        F: "venuecode",
+        
+      };
+      let excelData = await excelToMongoConstant.excelToJsonConversion(keysMapping,fileName, folder, sheetName, skipRow)
       
       let data = await excelToMongoService.Model.insertMany(excelData["Sheet1"]);
 

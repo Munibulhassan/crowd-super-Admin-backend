@@ -1,5 +1,7 @@
 const express = require('express');
+const { appMiddleware } = require('../../../middleware/app.middleware');
 const positionsController = require("./position.controller");
+
 
 // const { authMiddleware } = require("../../../middleware/auth.middleware");
 // const { roleMiddleware } = require("../../../middleware/role.middleware");
@@ -31,7 +33,13 @@ positionsRouter.put("/update/:id",
     positionsController.update
 );
 
-positionsRouter.delete("/delete/:id",
+positionsRouter.post("/upload/",
+appMiddleware.uploadXcelFile(),
+
+    positionsController.upload
+);
+
+positionsRouter.delete("/delete/:id", 
     positionsController.delete
 );
 

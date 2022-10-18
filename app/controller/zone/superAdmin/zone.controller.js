@@ -1,5 +1,4 @@
 const zoneService = require("../../../service/zone.service");
-
 const _ = require("lodash")
 
 class Zone {

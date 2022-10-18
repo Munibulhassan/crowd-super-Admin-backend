@@ -10,7 +10,9 @@ const VanueSchema = new mongoose.Schema({
 	venuecode:{
         type: String,
         uppercase:true,
-        required: true
+        required: true,
+        unique: true,
+
     },
 	
 }, {

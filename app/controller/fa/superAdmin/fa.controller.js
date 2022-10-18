@@ -13,7 +13,8 @@ class FA {
           msg: "FA already existed",
         });
       const datacount = await faService.Model.find();
-      console.log(datacount.length)
+      
+    
       req.body.facode = req.body.facode.toUpperCase()
 
       req.body.rolecode = (req.body.facode + req.body.jobtype + (datacount.length+1)).toUpperCase()

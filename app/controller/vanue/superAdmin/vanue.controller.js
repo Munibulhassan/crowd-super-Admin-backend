@@ -4,6 +4,7 @@ class Vanues {
 
     async create(req, res) {
         try {
+          
           let { venuename } = req.body;
           const dataExisted = await vanuesService.Model.findOne({ venuename });
           if (dataExisted)
@@ -12,7 +13,8 @@ class Vanues {
               status: 200,
               msg: "department already existed",
             });
-req.body.venuecode= req.body.venuecode.toUpperCase()
+
+            req.body.venuecode= req.body.venuecode.toUpperCase()
     
           const data = await vanuesService.Model.create(req.body);
     
@@ -23,6 +25,7 @@ req.body.venuecode= req.body.venuecode.toUpperCase()
             data,
           });
         } catch (error) {
+          
           res.status(500).send({ status: 500, success: false, msg: error.message });
         }
       }

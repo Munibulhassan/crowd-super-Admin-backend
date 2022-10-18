@@ -55,8 +55,7 @@ class Departments {
         if(query[pro]) query[pro] = {$regex:query[pro],$options: "i" }
         else delete query[pro]
       })
-      // console.log(query)
-      // return
+      
       let data = await departmentService.Model.find(query);
       if (data.length == 0)
         return res.send({

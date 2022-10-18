@@ -11,13 +11,15 @@ const FASchema = new mongoose.Schema({
 	facode:{
         type: String,
         uppercase:true,
-        required: true
+        required: true,
+        unique: true,
+
     },
     jobtype:{
         type:String
     },
 	jobtitle:{
-        type: String,
+        type: [],
     },
     rolecode:{
         type: String,

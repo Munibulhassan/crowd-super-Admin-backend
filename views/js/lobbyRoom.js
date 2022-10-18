@@ -7,8 +7,8 @@ socket.on("connection", () => {
     console.log("connected")
 })
 
-if (players)
-    console.log(players)
+
+    
 // players = Object.keys(JSON.parse(players))
 // let userInput = document.getElementById("playerList");
 // let listTag = document.createElement("li");
