@@ -1,99 +1,118 @@
 const faService = require("../../../service/fa.service");
-const _ = require("lodash")
+const departmentService = require("../../../service/department.service");
+
+const _ = require("lodash");
+const { conformsTo } = require("lodash");
 
 class FA {
   async create(req, res) {
     try {
-      let { functionalarea } = req.body;
+      let { functionalarea, department } = req.body;
+      if (!(functionalarea && department)) {
+        return res.send({
+          success: false,
+          status: 200,
+          message: "All input is required",
+        });
+      }
       const dataExisted = await faService.Model.findOne({ functionalarea });
       if (dataExisted)
         return res.send({
           success: true,
           status: 200,
-          msg: "FA already existed",
+          message: "FA already existed",
         });
+
       const datacount = await faService.Model.find();
-      
-    
-      req.body.facode = req.body.facode.toUpperCase()
 
-      req.body.rolecode = (req.body.facode + req.body.jobtype + (datacount.length+1)).toUpperCase()
-
-
+      req.body.facode = req.body.facode.toUpperCase();
 
       const data = await faService.Model.create(req.body);
-
+      const department1 = await departmentService.Model.findById(
+        req.body.department
+      );
+      await departmentService.Model.updateOne(
+        { _id: req.body.department },
+        { totalfunction: department1.totalfunction + 1 }
+      );
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Created Successfully",
+        message: "Created Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
   async get(req, res) {
     try {
       let { id } = req.params;
-      const data = await faService.Model.findById(id);
+      const data = await faService.Model.findById(id).populate("department");
       if (!data)
         return res.send({
           success: true,
           status: 200,
-          msg: "no data found",
+          message: "no data found",
         });
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Fetched Successfully",
+        message: "Fetched Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
   async gets(req, res) {
     try {
-      if(req.query){
-        let data = await faService.Model.find(req.query);
-      if (data.length == 0)
-        return res.send({
-          success: true,
-          status: 200,
-          msg: "no data found",
-          data: [],
-        });
+      if (req.query) {
+        let data = await faService.Model.find(req.query).populate("department");
+        if (data.length == 0)
+          return res.send({
+            success: true,
+            status: 200,
+            message: "no data found",
+            data: [],
+          });
 
-      res.status(200).send({
-        status: 200,
-        success: true,
-        msg: "Fetched Successfully",
-        count: data.length,
-        data,
-      });
-      }else{
-      let data = await faService.Model.find();
-      if (data.length == 0)
-        return res.send({
-          success: true,
+        res.status(200).send({
           status: 200,
-          msg: "no data found",
-          data: [],
+          success: true,
+          message: "Fetched Successfully",
+          count: data.length,
+          data,
         });
+      } else {
+        let data = await faService.Model.find();
+        if (data.length == 0)
+          return res.send({
+            success: true,
+            status: 200,
+            message: "no data found",
+            data: [],
+          });
 
-      res.status(200).send({
-        status: 200,
-        success: true,
-        msg: "Fetched Successfully",
-        count: data.length,
-        data,
-      });}
+        res.status(200).send({
+          status: 200,
+          success: true,
+          message: "Fetched Successfully",
+          count: data.length,
+          data,
+        });
+      }
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -101,51 +120,57 @@ class FA {
     try {
       let { id } = req.params;
       let data = await faService.Model.findById(id);
-      const datacount = await faService.Model.find();
-      if (req.body.facode || req.body.jobtype) {
 
+      if (req.body.facode) {
         req.body.facode = req.body.facode.toUpperCase();
-        req.body.rolecode = (req.body.facode + req.body.jobtype + datacount.length).toUpperCase()
-      } else if (req.body.facode) {
-        req.body.facode = req.body.facode.toUpperCase();
-        req.body.rolecode = (req.body.facode + data.jobtype + datacount.length).toUpperCase()
       }
 
-      // if(req.body.rolecode){
-      //   req.body.facode= req.body.facode.toUpperCase()
-
-
-      // }
-
-      if (_.isEqual(data._doc, req.body)) return res.send({
-        success: true,
-        status: 200,
-        msg: "record is already upto date",
-      });
+      if (_.isEqual(data._doc, req.body))
+        return res.send({
+          success: true,
+          status: 200,
+          message: "record is already upto date",
+        });
 
       if (!data)
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
 
-      data = await faService.Model.findOneAndUpdate(
-        { _id: id },
-        req.body,
-        {
-          new: true,
-        }
-      );
+      if (req.body.department) {
+        const department = await departmentService.Model.findById(
+          req.body.department
+        );
+        console.log(department);
+        await departmentService.Model.updateOne(
+          { _id: req.body.department },
+          { totalfunction: department.totalfunction + 1 }
+        );
+        const department1 = await departmentService.Model.findById(
+          data.department
+        );
+
+        await departmentService.Model.updateOne(
+          { _id: data.department },
+          { totalfunction: department1?.totalfunction - 1 }
+        );
+      }
+      data = await faService.Model.findOneAndUpdate({ _id: id }, req.body, {
+        new: true,
+      });
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Updated Successfully",
+        message: "Updated Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -157,18 +182,20 @@ class FA {
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
       data = await faService.Model.findByIdAndRemove(id);
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Deleted Successfully",
+        message: "Deleted Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 }

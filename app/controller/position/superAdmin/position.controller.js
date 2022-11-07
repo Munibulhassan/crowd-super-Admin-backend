@@ -1,9 +1,9 @@
 const positionService = require("../../../service/position.service");
 const _ = require("lodash");
 // const excelToMongoService = require("../../../service/excelToMongo.service");
+
 const faService = require("../../../service/fa.service");
 const vanuesService = require("../../../service/vanue.service");
-
 const fileService = require("../../../constants/file.constant");
 const excelToMongoConstant = require("../../../constants/excelToMongo.constant");
 const fs = require("fs");
@@ -11,27 +11,26 @@ const fs = require("fs");
 class Positions {
   async create(req, res) {
     try {
-    
-    const {
-      funciton,venue,jobTitle,workforcetype
-    } = req.body
-    if(!(funciton&&venue&&jobTitle&&workforcetype)){
-      return res.status(200).send({
-        success:false,
-        message:"All input is required"
-      })
-    }
+      const { functionarea, venue, jobTitle, workforcetype } = req.body;
+      if (!(functionarea && venue && jobTitle && workforcetype)) {
+        return res.status(200).send({
+          success: false,
+          message: "All input is required",
+        });
+      }
 
-    const data = await positionService.Model.create(req.body);
+      const data = await positionService.Model.create(req.body);
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Created Successfully",
+        message: "Created Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -43,40 +42,57 @@ class Positions {
         return res.send({
           success: true,
           status: 200,
-          msg: "no data found",
+          message: "no data found",
         });
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Fetched Successfully",
+        message: "Fetched Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
   async gets(req, res) {
     try {
-      let data = await positionService.Model.find();
+      const query = Object.fromEntries(
+        Object.entries(req.query).filter(([_, v]) => v != "")
+      );
+
+      let data = await positionService.Model.find(query)
+        .populate("functionarea")
+        .populate("venue");
+
       if (data.length == 0)
         return res.send({
           success: true,
           status: 200,
-          msg: "no data found",
+          message: "no data found",
           data: [],
         });
+      const filterdata = data.sort(function(a, b) {
+        var textA = a.functionarea.functionalarea.toUpperCase();
+        var textB = b.functionarea.functionalarea.toUpperCase();
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+    });
+console.log(filterdata)
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Fetched Successfully",
+        message: "Fetched Successfully",
         count: data.length,
-        data,
+    data: filterdata,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -88,14 +104,14 @@ class Positions {
       // if(_.isEqual(data._doc,req.body)) return res.send({
       //   success: true,
       //   status: 200,
-      //   msg: "record is already upto date",
+      //   message: "record is already upto date",
       // });
 
       if (!data)
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
 
       data = await positionService.Model.findOneAndUpdate(
@@ -109,11 +125,13 @@ class Positions {
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Updated Successfully",
+        message: "Updated Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -126,7 +144,7 @@ class Positions {
       // return
       const keysMapping = {
         A: "FA_Code",
-        B: "Venue_Code",
+        B: "Venue_Name",
         C: "Workforce_Type",
         D: "Job_Title",
         E: "Start_Date",
@@ -150,16 +168,16 @@ class Positions {
       //     acc[cur[key]] = acc[cur[key]] || [];
       //   });
       // }
-      
+
       const arr = [];
       data.map(async (item, index) => {
         const functionid = await faService.Model.find({ facode: item.FA_Code });
         const venueid = await vanuesService.Model.find({
-          venuecode: item.Venue_Code.toUpperCase(),
+          venuename: item.Venue_Name,
         });
 
         arr.push({
-          function: functionid[0]?._id,
+          functionarea: functionid[0]?._id,
           venue: venueid[0]?._id,
           workforcetype: item.Workforce_Type,
           jobTitle: item.Job_Title,
@@ -169,24 +187,24 @@ class Positions {
           peakShift: item.Peak_Shift,
           shiftsPerDay: item.Shifts_per_day,
         });
-        if (index == data.length - 1) {
-          
+        if (arr.length == data.length) {
           let positiondata = await positionService.Model.insertMany(arr);
 
-          
           await fileService.deleteFile(fileName, folder);
 
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "All positions Inserted Successfully",
+            message: "All positions Inserted Successfully",
             positiondata,
           });
         }
       });
     } catch (error) {
       await fileService.deleteFile(fileName, folder);
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
   async delete(req, res) {
@@ -197,18 +215,20 @@ class Positions {
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
       data = await positionService.Model.findByIdAndRemove(id);
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Deleted Successfully",
+        message: "Deleted Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 }

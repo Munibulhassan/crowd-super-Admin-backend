@@ -8,9 +8,7 @@ exports.getAllHeadCount = function () {
       [
 
         { $project: { department: 1,status:1 , _id: 0 } },
-        {
-            $match : { status:"active" }
-          },
+       
         {
           $lookup: {
             from: "departments",
@@ -36,6 +34,7 @@ exports.getAllHeadCount = function () {
           },
       ],
       (err, data) => {
+        
         if (err) {
           reject(err);
         } else {

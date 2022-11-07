@@ -7,13 +7,15 @@ const VanueSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-	venuecode:{
+	location:{
         type: String,
-        uppercase:true,
-        required: true,
-        unique: true,
-
     },
+    zone:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Zone",
+
+    }
+
 	
 }, {
     timestamps: true

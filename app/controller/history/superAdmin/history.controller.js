@@ -10,7 +10,7 @@ class History {
       //   return res.send({
       //     success: true,
       //     status: 200,
-      //     msg: "FA already existed",
+      //     message: "FA already existed",
       //   });
 
       const data = await historyService.Model.create(req.body);
@@ -18,11 +18,11 @@ class History {
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Created Successfully",
+        message: "Created Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -34,17 +34,17 @@ class History {
         return res.send({
           success: true,
           status: 200,
-          msg: "no data found",
+          message: "no data found",
         });
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Fetched Successfully",
+        message: "Fetched Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -55,19 +55,19 @@ class History {
         return res.send({
           success: true,
           status: 200,
-          msg: "no data found",
+          message: "no data found",
           data: [],
         });
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Fetched Successfully",
+        message: "Fetched Successfully",
         count: data.length,
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -83,14 +83,14 @@ class History {
       if(_.isEqual(data._doc,req.body)) return res.send({
         success: true,
         status: 200,
-        msg: "record is already upto date",
+        message: "record is already upto date",
       });
       
       if (!data)
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
 
       data = await historyService.Model.findOneAndUpdate(
@@ -104,11 +104,11 @@ class History {
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Updated Successfully",
+        message: "Updated Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -120,18 +120,18 @@ class History {
         return res.send({
           success: true,
           status: 403,
-          msg: "invalid id",
+          message: "invalid id",
         });
          data = await historyService.Model.findByIdAndRemove(id);
 
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Deleted Successfully",
+        message: "Deleted Successfully",
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 }

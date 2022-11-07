@@ -18,7 +18,10 @@ const ZoneSchema = new mongoose.Schema(
         
         
       },
-    // venue: [{ type: mongoose.Schema.Types.ObjectId, ref: "Vanue" }],
+      venuesunder:{
+        type:Number,
+        default:0
+      }
   },
   {
     timestamps: true,

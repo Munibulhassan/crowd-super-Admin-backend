@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 
 const PositionSchema = new mongoose.Schema(
   {
-    function: {
+    functionarea: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "FA",
     },
@@ -11,10 +11,9 @@ const PositionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vanue",
     },
-    workforcetype:{
-      type:String,
-      enum:["Contractor","Permanent"]
-
+    workforcetype: {
+      type: String,
+      enum: ["Contractor", "Permanent"],
     },
 
     jobTitle: {
@@ -26,8 +25,9 @@ const PositionSchema = new mongoose.Schema(
       default: new Date(),
     },
     endDate: {
-      type: String,
-      default: "",
+      type: Date,
+
+      default:  new Date(),
     },
     totalDemand: {
       type: Number,

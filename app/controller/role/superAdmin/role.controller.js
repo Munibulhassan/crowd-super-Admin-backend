@@ -10,7 +10,7 @@ class Roles {
             return res.send({
               success: true,
               status: 200,
-              msg: "role already existed",
+              message: "role already existed",
             });
     
           const data = await rolesService.Model.create(req.body);
@@ -18,11 +18,11 @@ class Roles {
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "Created Successfully",
+            message: "Created Successfully",
             data,
           });
         } catch (error) {
-          res.status(500).send({ status: 500, success: false, msg: error.message });
+          res.status(500).send({ status: 500, success: false, message: error.message });
         }
       }
     
@@ -34,17 +34,17 @@ class Roles {
             return res.send({
               success: true,
               status: 200,
-              msg: "no data found",
+              message: "no data found",
             });
     
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "Fetched Successfully",
+            message: "Fetched Successfully",
             data,
           });
         } catch (error) {
-          res.status(500).send({ status: 500, success: false, msg: error.message });
+          res.status(500).send({ status: 500, success: false, message: error.message });
         }
       }
     
@@ -55,19 +55,19 @@ class Roles {
             return res.send({
               success: true,
               status: 200,
-              msg: "no data found",
+              message: "no data found",
               data: [],
             });
     
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "Fetched Successfully",
+            message: "Fetched Successfully",
             count: data.length,
             data,
           });
         } catch (error) {
-          res.status(500).send({ status: 500, success: false, msg: error.message });
+          res.status(500).send({ status: 500, success: false, message: error.message });
         }
       }
     
@@ -80,7 +80,7 @@ class Roles {
             return res.send({
               success: true,
               status: 403,
-              msg: "invalid id",
+              message: "invalid id",
             });
     
           data = await rolesService.Model.findOneAndUpdate(
@@ -94,11 +94,11 @@ class Roles {
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "Updated Successfully",
+            message: "Updated Successfully",
             data,
           });
         } catch (error) {
-          res.status(500).send({ status: 500, success: false, msg: error.message });
+          res.status(500).send({ status: 500, success: false, message: error.message });
         }
       }
     
@@ -110,18 +110,18 @@ class Roles {
             return res.send({
               success: true,
               status: 403,
-              msg: "invalid id",
+              message: "invalid id",
             });
              data = await rolesService.Model.findByIdAndRemove(id);
     
           res.status(200).send({
             status: 200,
             success: true,
-            msg: "Deleted Successfully",
+            message: "Deleted Successfully",
             data,
           });
         } catch (error) {
-          res.status(500).send({ status: 500, success: false, msg: error.message });
+          res.status(500).send({ status: 500, success: false, message: error.message });
         }
       }
 

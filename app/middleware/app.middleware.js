@@ -16,14 +16,14 @@ class AppMiddleware {
                             if (err instanceof multer.MulterError) {
                                 return res.status(400).send({
                                     success: false,
-                                    msg: err.message,
+                                    message: err.message,
                                     status: 400,
                                 });
                             } else if (err) {
                                 return res.status(400).send({
                                     success: false,
                                     status: 400,
-                                    msg: err.message,
+                                    message: err.message,
                                 });
                             }
                             next()
@@ -31,7 +31,7 @@ class AppMiddleware {
                             return res.status(500).send({
                                 success: false,
                                 status: 500,
-                                msg: err.message,
+                                message: err.message,
                             });
                         }
                         // Everything went fine.

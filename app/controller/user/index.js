@@ -32,9 +32,19 @@ const usersRouter = express.Router();
 //     roleMiddleware.isAdmin()
 // );
 
+usersRouter.post("/login", 
+    usersController.login
+);
+// usersRouter.post("/forgotpassword", 
+//     usersController.forgotpassword
+// );
 
 usersRouter.post("/create",
     usersController.create
+);
+
+usersRouter.put("/update/:id",
+    usersController.update
 );
 
 
@@ -46,7 +56,12 @@ usersRouter.get("/getAllHeadCount",
     usersController.getAllHeadCount
 );
 
-usersRouter.post("/image/:id",upload.single("file"),usersController.imageupload)
+
+// usersRouter.get("/update",
+//     usersController.update
+// );
+
+usersRouter.post("/image",upload.single("file"),usersController.imageupload)
 
 usersRouter.post("/upload",
     appMiddleware.uploadXcelFile(),

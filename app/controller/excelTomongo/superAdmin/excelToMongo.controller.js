@@ -31,13 +31,13 @@ class ExcelToMongo {
       res.status(200).send({
         status: 200,
         success: true,
-        msg: "Created Successfully",
+        message: "Created Successfully",
         data,
       });
 
     } catch (error) {
       await fileService.deleteFile(fileName,folder)
-      res.status(500).send({ status: 500, success: false, msg: error.message });
+      res.status(500).send({ status: 500, success: false, message: error.message });
     }
   }
 }

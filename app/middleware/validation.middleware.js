@@ -21,7 +21,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             res.status(400).send(errors);
@@ -31,7 +31,7 @@ module.exports = class ValidationMiddleware {
                     if (req.body.password == req.body.confirmPassword) {
                         next();
                     } else {
-                        res.status(400).send({ success: false, status: 400, msg: "Both Password Must Be Same" })
+                        res.status(400).send({ success: false, status: 400, message: "Both Password Must Be Same" })
                     }
                 })
                 .use(this.validateUserEmailCheckDB())
@@ -51,7 +51,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             res.status(400).send(errors);
@@ -72,7 +72,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             res.status(400).send(errors);
@@ -96,7 +96,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -108,7 +108,7 @@ module.exports = class ValidationMiddleware {
                 const type = req.body.type
                 if (type == "admin") {
                     if (req.user && req.user.role && req.user.role && req.user.role.name == "ADMIN") next()
-                    else return res.status(400).send({ success: false, status: 400, msg: "Access Forbiden" });
+                    else return res.status(400).send({ success: false, status: 400, message: "Access Forbiden" });
                 } else {
                     next()
                 }
@@ -116,7 +116,7 @@ module.exports = class ValidationMiddleware {
             .use(async (req, res, next) => {
                 const passwordChecked = await bcrypt.compare(req.body.password, req.user.password)
                 if (passwordChecked) next()
-                else return res.status(400).send({ success: false, status: 400, msg: "Password Is Invalid" });
+                else return res.status(400).send({ success: false, status: 400, message: "Password Is Invalid" });
             })
     }
 
@@ -131,7 +131,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -152,7 +152,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -175,7 +175,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -195,7 +195,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -211,7 +211,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(400).send({ success: false, msg: error.msg });
+                    res.status(400).send({ success: false, message: error.msg });
                 }
             })
             .use(async (req, res, next) => {
@@ -222,10 +222,10 @@ module.exports = class ValidationMiddleware {
                     if (moment(req.token.expireTime, "MMMM Do YYYY, h:mm:ss a").isAfter(moment(new Date(), "MMMM Do YYYY, h:mm:ss a"))) next()
                     else {
                         Service.resetTokenService.findOneAndRemove({ token: req.body.resetToken })
-                        return res.status(400).send({ success: false, status: 400, msg: "Bad Request or linked was Expired" });
+                        return res.status(400).send({ success: false, status: 400, message: "Bad Request or linked was Expired" });
                     }
                 } catch (error) {
-                    res.status(400).send({ success: false, msg: error.msg });
+                    res.status(400).send({ success: false, message: error.msg });
                 }
             })
             .use(async (req, res, next) => {
@@ -233,7 +233,7 @@ module.exports = class ValidationMiddleware {
                 if (req.body.newPassword == req.body.confirmPassword) {
                     next();
                 } else {
-                    return res.status(400).send({ success: false, status: 400, msg: "Both Password Must Be Same" })
+                    return res.status(400).send({ success: false, status: 400, message: "Both Password Must Be Same" })
                 }
             })
     }
@@ -249,7 +249,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -262,18 +262,18 @@ module.exports = class ValidationMiddleware {
                         req.userPass = userPass
                         next()
                     }
-                    else return res.status(400).send({ success: false, status: 400, msg: "Old password is invalid " });
+                    else return res.status(400).send({ success: false, status: 400, message: "Old password is invalid " });
                 })
                 .use(async (req, res, next) => {
                     const passwordChecked = await bcrypt.compare(req.body.newPassword, req.userPass.password)
-                    if (passwordChecked) return res.status(400).send({ success: false, status: 400, msg: "Please give new Password" });
+                    if (passwordChecked) return res.status(400).send({ success: false, status: 400, message: "Please give new Password" });
                     else next()
                 })
                 .use((req, res, next) => {
                     if (req.body.newPassword == req.body.confirmPassword) {
                         next();
                     } else {
-                        res.status(400).send({ success: false, status: 400, msg: "Both Password Must Be Same" })
+                        res.status(400).send({ success: false, status: 400, message: "Both Password Must Be Same" })
                     }
                 })
 
@@ -291,7 +291,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(200).send(errors);
@@ -311,7 +311,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(200).send(errors);
@@ -334,7 +334,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -359,7 +359,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -386,7 +386,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -408,7 +408,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -430,7 +430,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -452,7 +452,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -473,7 +473,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -493,7 +493,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -516,7 +516,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -540,7 +540,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -561,7 +561,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -584,7 +584,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -607,7 +607,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -632,7 +632,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -657,7 +657,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Package Is Not Found With Given Id"
+                            message: "Package Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     }
@@ -666,7 +666,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -685,7 +685,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Package Is Not Found With Given Id"
+                            message: "Package Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     }
@@ -694,7 +694,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -715,7 +715,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Package Is Not Found With Given Id"
+                            message: "Package Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     }
@@ -724,7 +724,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -745,7 +745,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Package Is Not Found With Given Id"
+                            message: "Package Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     }
@@ -754,7 +754,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -772,7 +772,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -795,7 +795,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -815,7 +815,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -828,7 +828,7 @@ module.exports = class ValidationMiddleware {
                     } else {
                         var errors = {
                             success: false,
-                            msg: "Subscription is already active"
+                            message: "Subscription is already active"
                         };
                         return res.status(400).send(errors);
                     }
@@ -847,7 +847,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -860,7 +860,7 @@ module.exports = class ValidationMiddleware {
                     } else {
                         var errors = {
                             success: false,
-                            msg: "Subscription is already active"
+                            message: "Subscription is already active"
                         };
                         return res.status(400).send(errors);
                     }
@@ -869,14 +869,14 @@ module.exports = class ValidationMiddleware {
                     if (req.body.amount <= 9) {
                         var errors = {
                             success: false,
-                            msg: "Please Select amount greater then 9"
+                            message: "Please Select amount greater then 9"
                         };
                         return res.status(400).send(errors);
 
                     } else if (req.body.amount == 15 || req.body.amount == 9) {
                         var errors = {
                             success: false,
-                            msg: "Connot Select Package value"
+                            message: "Connot Select Package value"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -905,7 +905,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -915,14 +915,14 @@ module.exports = class ValidationMiddleware {
                     if (req.body.amount <= 9) {
                         var errors = {
                             success: false,
-                            msg: "Please Select amount greater then 9"
+                            message: "Please Select amount greater then 9"
                         };
                         return res.status(400).send(errors);
 
                     } else if (req.body.amount == 15) {
                         var errors = {
                             success: false,
-                            msg: "Connot Select Package value"
+                            message: "Connot Select Package value"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -951,7 +951,7 @@ module.exports = class ValidationMiddleware {
                         }).catch(error => {
                             var errors = {
                                 success: false,
-                                msg: error.details[0].message,
+                                message: error.details[0].message,
                                 data: error.name,
                             };
                             return res.status(400).send(errors);
@@ -973,7 +973,7 @@ module.exports = class ValidationMiddleware {
                 if (findOne) {
                     var errors = {
                         success: false,
-                        msg: "This Email Is Already Registered"
+                        message: "This Email Is Already Registered"
                     };
                     return res.status(400).send(errors);
                 } else {
@@ -992,7 +992,7 @@ module.exports = class ValidationMiddleware {
                     var errors = {
                         status: 400,
                         success: false,
-                        msg: "This username Is Already Registered"
+                        message: "This username Is Already Registered"
                     };
                     return res.status(400).send(errors);
                 } else {
@@ -1012,7 +1012,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             status: 200,
                             success: false,
-                            msg: "access denied no or invalid token"
+                            message: "access denied no or invalid token"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1020,7 +1020,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(400).send({ success: false, status: 400, msg: error.message });
+                    res.status(400).send({ success: false, status: 400, message: error.message });
                 }
             })
         )
@@ -1035,7 +1035,7 @@ module.exports = class ValidationMiddleware {
                     if (!data) {
                         var errors = {
                             success: false,
-                            msg: "No Data Was Found Or User Is Not Valid"
+                            message: "No Data Was Found Or User Is Not Valid"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1043,7 +1043,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(400).send({ success: false, status: 400, msg: "No Data Was Found Or User Is Not Valid" });
+                    res.status(400).send({ success: false, status: 400, message: "No Data Was Found Or User Is Not Valid" });
                 }
             })
         )
@@ -1059,7 +1059,7 @@ module.exports = class ValidationMiddleware {
                     if (!data) {
                         var errors = {
                             success: false,
-                            msg: "This Email Was Not Register"
+                            message: "This Email Was Not Register"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1067,7 +1067,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1082,7 +1082,7 @@ module.exports = class ValidationMiddleware {
                     if (!data) {
                         var errors = {
                             success: false,
-                            msg: "Invalid Password Or Email"
+                            message: "Invalid Password Or Email"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1090,7 +1090,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1112,7 +1112,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 400,
-                            msg: "Book Is Not Found With Given Id"
+                            message: "Book Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1121,7 +1121,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ status: 2000, success: false, msg: error.message });
+                    res.status(500).send({ status: 2000, success: false, message: error.message });
                 }
             })
         )
@@ -1137,7 +1137,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 400,
-                            msg: "Season Is Not Found With Given Id"
+                            message: "Season Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1145,7 +1145,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1164,7 +1164,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 200,
-                            msg: "Chapter is already existed"
+                            message: "Chapter is already existed"
                         };
                         return res.status(200).send(errors);
                     } else {
@@ -1174,7 +1174,7 @@ module.exports = class ValidationMiddleware {
                     }
 
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1192,7 +1192,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 200,
-                            msg: "invalid chapter"
+                            message: "invalid chapter"
                         };
                         return res.status(200).send(errors);
                     } else {
@@ -1203,7 +1203,7 @@ module.exports = class ValidationMiddleware {
                     }
 
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1218,7 +1218,7 @@ module.exports = class ValidationMiddleware {
     //                 console.log(result)
 
     //             } catch (error) {
-    //                 res.status(500).send({ success: false, msg: error.message });
+    //                 res.status(500).send({ success: false, message: error.message });
     //             }
     //         })
     //     )
@@ -1234,7 +1234,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Book Title Is Already Existed"
+                            message: "Book Title Is Already Existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1242,7 +1242,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1259,7 +1259,7 @@ module.exports = class ValidationMiddleware {
                             var errors = {
                                 success: true,
                                 status: 400,
-                                msg: "Book Title Is Already Existed"
+                                message: "Book Title Is Already Existed"
                             };
                             return res.status(400).send(errors);
                         } else {
@@ -1270,7 +1270,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1287,7 +1287,7 @@ module.exports = class ValidationMiddleware {
                     next();
 
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1303,7 +1303,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Season name is already existed"
+                            message: "Season name is already existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1311,7 +1311,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1327,7 +1327,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "season is already existed"
+                            message: "season is already existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1335,7 +1335,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1351,7 +1351,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "invalid id"
+                            message: "invalid id"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1359,7 +1359,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1375,7 +1375,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 200,
-                            msg: "Season id is invalid"
+                            message: "Season id is invalid"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1383,7 +1383,7 @@ module.exports = class ValidationMiddleware {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1401,7 +1401,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Chapter name is already existed"
+                            message: "Chapter name is already existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1409,7 +1409,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1425,7 +1425,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "This Folder Id Is Already In Used"
+                            message: "This Folder Id Is Already In Used"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1433,7 +1433,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1450,7 +1450,7 @@ module.exports = class ValidationMiddleware {
                             var errors = {
                                 success: true,
                                 status: 400,
-                                msg: "This Folder Id Is Already In Used"
+                                message: "This Folder Id Is Already In Used"
                             };
                             return res.status(400).send(errors);
                         } else {
@@ -1461,7 +1461,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1478,7 +1478,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "This Season id is already in used"
+                            message: "This Season id is already in used"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1486,7 +1486,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1503,7 +1503,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 200,
-                            msg: "Nothing Is Found"
+                            message: "Nothing Is Found"
                         };
                         return res.status(200).send(errors);
                     } else {
@@ -1511,7 +1511,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1528,7 +1528,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Given Value Is Already Existed"
+                            message: "Given Value Is Already Existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1536,7 +1536,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1552,7 +1552,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Nothing Is Found With Given Id"
+                            message: "Nothing Is Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1560,7 +1560,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1577,7 +1577,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Given Value Is Already Existed"
+                            message: "Given Value Is Already Existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1585,7 +1585,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1606,7 +1606,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Category Is Not Found With Given Id"
+                            message: "Category Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     }
@@ -1616,7 +1616,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1631,7 +1631,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Category Is Not Found With Given Id"
+                            message: "Category Is Not Found With Given Id"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1639,7 +1639,7 @@ module.exports = class ValidationMiddleware {
                     }
 
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1655,7 +1655,7 @@ module.exports = class ValidationMiddleware {
                             var errors = {
                                 success: true,
                                 status: 400,
-                                msg: "Category Is Not Found With Given Id"
+                                message: "Category Is Not Found With Given Id"
                             };
                             return res.status(400).send(errors);
                         } else {
@@ -1666,7 +1666,7 @@ module.exports = class ValidationMiddleware {
                     }
 
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1681,14 +1681,14 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 200,
-                            msg: "file is required"
+                            message: "file is required"
                         };
                         return res.status(200).send(errors);
                     } else {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1707,14 +1707,14 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: false,
                             status: 200,
-                            msg: "Image is required"
+                            message: "Image is required"
                         };
                         return res.status(200).send(errors);
                     } else {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1729,7 +1729,7 @@ module.exports = class ValidationMiddleware {
                     req.cover = data
                     next()
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1746,7 +1746,7 @@ module.exports = class ValidationMiddleware {
                         var errors = {
                             success: true,
                             status: 400,
-                            msg: "Given Value Is Already Existed"
+                            message: "Given Value Is Already Existed"
                         };
                         return res.status(400).send(errors);
                     } else {
@@ -1754,7 +1754,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1776,7 +1776,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1790,12 +1790,12 @@ module.exports = class ValidationMiddleware {
 
                     const { data } = await Service.orderService.findOne({ createdAt: "" });
                     if (data.length > 0) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Your Subscription is Active" });
+                        return res.status(200).send({ success: false, status: 200, message: "Your Subscription is Active" });
                     } else {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, status: 500, msg: error.message });
+                    res.status(500).send({ success: false, status: 500, message: error.message });
                 }
             })
         )
@@ -1809,12 +1809,12 @@ module.exports = class ValidationMiddleware {
 
                     const { data } = await Service.stripeService.findSubscriptions({ customer: req.user.customerId, limit: 1 });
                     if (data.length > 0) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Your Subscription is Active" });
+                        return res.status(200).send({ success: false, status: 200, message: "Your Subscription is Active" });
                     } else {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, status: 500, msg: error.message });
+                    res.status(500).send({ success: false, status: 500, message: error.message });
                 }
             })
         )
@@ -1831,10 +1831,10 @@ module.exports = class ValidationMiddleware {
                         req.user.subscription = id;
                         next()
                     } else {
-                        return res.status(400).send({ success: false, status: 400, msg: "No Subscription Is Find" });
+                        return res.status(400).send({ success: false, status: 400, message: "No Subscription Is Find" });
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, status: 500, msg: error.message });
+                    res.status(500).send({ success: false, status: 500, message: error.message });
                 }
             })
         )
@@ -1848,12 +1848,12 @@ module.exports = class ValidationMiddleware {
                 try {
                     const { data } = await Service.stripeService.createOrGetPaymentMethod(req.user.customerId, req.body);
                     if (data.length > 0) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Your Subscription is Active" });
+                        return res.status(200).send({ success: false, status: 200, message: "Your Subscription is Active" });
                     } else {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, status: 500, msg: error.message });
+                    res.status(500).send({ success: false, status: 500, message: error.message });
                 }
             })
         )
@@ -1876,7 +1876,7 @@ module.exports = class ValidationMiddleware {
                         next()
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, status: 500, msg: error.message });
+                    res.status(500).send({ success: false, status: 500, message: error.message });
                 }
             })
         )
@@ -1893,13 +1893,13 @@ module.exports = class ValidationMiddleware {
                     const { data } = await Service.googleDriveService.findSingleFolder(req.body.FolderID);
 
                     if (!data) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Please Give A Valid Folder Id" });
+                        return res.status(200).send({ success: false, status: 200, message: "Please Give A Valid Folder Id" });
                     } else {
                         req.googleFolder = data
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1914,7 +1914,7 @@ module.exports = class ValidationMiddleware {
                         const { data } = await Service.googleDriveService.findSingleFolder(req.body.FolderID);
 
                         if (!data) {
-                            return res.status(200).send({ success: false, status: 200, msg: "Please Give A Valid Folder Id" });
+                            return res.status(200).send({ success: false, status: 200, message: "Please Give A Valid Folder Id" });
                         } else {
                             req.googleFolder = data
                             next();
@@ -1923,7 +1923,7 @@ module.exports = class ValidationMiddleware {
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1937,14 +1937,14 @@ module.exports = class ValidationMiddleware {
                     const { data } = await Service.googleDriveService.findSingleFile(req.body.season);
 
                     if (!data) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Please Give A Valid google file Id" });
+                        return res.status(200).send({ success: false, status: 200, message: "Please Give A Valid google file Id" });
                     } else {
-                        if (data.mimeType != 'application/vnd.google-apps.document') return res.status(200).send({ success: false, status: 200, msg: "invalid season id" });
+                        if (data.mimeType != 'application/vnd.google-apps.document') return res.status(200).send({ success: false, status: 200, message: "invalid season id" });
                         req.googleFolder = data
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1957,13 +1957,13 @@ module.exports = class ValidationMiddleware {
                 try {
                     const { data } = await Service.googleDriveService.findSingleFile(req.body.season);
                     if (!data) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Please Give A Valid Doc Id" });
+                        return res.status(200).send({ success: false, status: 200, message: "Please Give A Valid Doc Id" });
                     } else {
                         req.googleDoc = data
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -1977,13 +1977,13 @@ module.exports = class ValidationMiddleware {
                     const season = await Service.seasonService.findOne({ book: req.body.book, _id: req.body.season });
 
                     if (!season) {
-                        return res.status(200).send({ success: false, status: 200, msg: "Invalid season Id" });
+                        return res.status(200).send({ success: false, status: 200, message: "Invalid season Id" });
                     } else {
                         req.season = season
                         next();
                     }
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -2002,7 +2002,7 @@ module.exports = class ValidationMiddleware {
                     req.checkLike = data
                     next();
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )
@@ -2016,11 +2016,11 @@ module.exports = class ValidationMiddleware {
             compose().use(async (req, res, next) => {
                 try {
                     const data = await Service.commentService.findOne({ _id: req.params.id, userId: req.user._id });
-                    if (!data) return res.status(200).send({ status: 200, success: false, msg: "No Data Is Found With Given Id" });
+                    if (!data) return res.status(200).send({ status: 200, success: false, message: "No Data Is Found With Given Id" });
                     req.comment = data
                     next();
                 } catch (error) {
-                    res.status(500).send({ success: false, msg: error.message });
+                    res.status(500).send({ success: false, message: error.message });
                 }
             })
         )

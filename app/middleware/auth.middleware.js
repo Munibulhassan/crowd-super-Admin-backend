@@ -18,7 +18,7 @@ class AuthenticationMiddleware {
                     if (!token)
                         return res.status(401).send({
                             success: false,
-                            msg: "Access Denied. No token provided.",
+                            message: "Access Denied. No token provided.",
                             code: 401,
                         });
                     // Remove Bearer from string
@@ -32,7 +32,7 @@ class AuthenticationMiddleware {
                         
                         res
                             .status(400)
-                            .send({ success: false, msg: "Invalid token.", status: 400 });
+                            .send({ success: false, message: "Invalid token.", status: 400 });
                     }
                 })
             // .use(this.isValid())
@@ -52,7 +52,7 @@ class AuthenticationMiddleware {
                                 if (user == null) {
                                     res.status(401).send({
                                         success: false,
-                                        msg: "Your account access has been blocked.",
+                                        message: "Your account access has been blocked.",
                                         status: 401,
                                     });
                                     throw true;

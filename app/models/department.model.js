@@ -16,6 +16,8 @@ const DepartmentSchema = new mongoose.Schema({
 	description:{
         type: String,
     },
+    totalfunction:{type:Number,default:0}
+    
 
 }, {
     timestamps: true

@@ -33,7 +33,7 @@ positionsRouter.put("/update/:id",
     positionsController.update
 );
 
-positionsRouter.post("/upload/",
+positionsRouter.post("/upload",
 appMiddleware.uploadXcelFile(),
 
     positionsController.upload

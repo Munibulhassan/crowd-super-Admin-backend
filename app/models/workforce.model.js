@@ -20,7 +20,7 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    dataOfBirth: {
+    dateOfBirth: {
       type: Date,
     },
     phone: {
@@ -29,19 +29,29 @@ const UserSchema = new mongoose.Schema(
     venue: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vanue",
+      
+    },
+    function:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "FA", 
+      
     },
     position: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Position",
+      
+
     }, //Functional Area / Job Title / Venue
-    jobType:{
-        type: String,
-        enum: ["contract", "paid", ""],
-        default: ""
-    },		                      //[contract, paid]
+    
+    workforcetype: {
+      type: String,
+      enum: ["Contractor", "Permanent"],
+    },
     department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
+      
+      
     },
     profileimage: { type: String },
     status: {
@@ -54,10 +64,7 @@ const UserSchema = new mongoose.Schema(
       enum: ["employee", "super_admin", "super_user", "lead", "client"],
       default: "employee",
     }, //[employee, manager, super_admin, super_user, lead, client]
-    employeeId: {
-      type: String,
-      default: 0,
-    },
+    
     lead: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -74,6 +81,11 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    employeeid:{
+      type:String,
+      unique: true,
+      
+    },
     gender: {
       type: String,
       enum: ["male", "female", ""],
@@ -88,10 +100,10 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-UserSchema.plugin(mongooseSerial, { field: "employeeId", digits: 3 });
+// UserSchema.plugin(mongooseSerial, { field: "employeeId", digits: 3 });
 
-UserSchema.pre("save", function (next) {
-  next();
-});
+// UserSchema.pre("save", function (next) {
+//   next();
+// });
 
 exports.User = mongoose.model("User", UserSchema);

@@ -9,7 +9,7 @@ class RoleMiddleware {
                     if (req.user.role.name == 'ADMIN') {
                         next();
                     } else {
-                        res.status(400).send({ success: false, status: 400, msg: "Insufficient privileges." });
+                        res.status(400).send({ success: false, status: 400, message: "Insufficient privileges." });
                         return
                     }
                 })
@@ -23,7 +23,7 @@ class RoleMiddleware {
                     if (req.user.role.name == 'USER' || req.user.role.name == 'ADMIN' || req.user.role.name == null) {
                         next();
                     } else {
-                        res.status(400).send({ success: false, status: 400, msg: "Insufficient privileges." });
+                        res.status(400).send({ success: false, status: 400, message: "Insufficient privileges." });
                         return
                     }
                 })

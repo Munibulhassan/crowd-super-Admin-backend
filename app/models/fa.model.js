@@ -1,32 +1,33 @@
 "use strict";
 const mongoose = require("mongoose");
 
-
-const FASchema = new mongoose.Schema({
-    functionalarea:{
-        type: String,
-        unique: true,
-        required: true
+const FASchema = new mongoose.Schema(
+  {
+    functionalarea: {
+      type: String,
+      unique: true,
+      required: true,
     },
-	facode:{
-        type: String,
-        uppercase:true,
-        required: true,
-        unique: true,
-
+    facode: {
+      type: String,
+      uppercase: true,
+      required: true,
+      unique: true,
     },
-    jobtype:{
-        type:String
+    description: {
+      type: String,
     },
-	jobtitle:{
-        type: [],
+    jobtitle:{
+      type:Array
     },
-    rolecode:{
-        type: String,
+    department: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Department",
     },
-
-}, {
-    timestamps: true
-});
+  },
+  {
+    timestamps: true,
+  }
+);
 
 exports.FA = mongoose.model("FA", FASchema);
