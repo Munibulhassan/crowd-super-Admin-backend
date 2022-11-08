@@ -206,7 +206,7 @@ class Users {
 
   async getAllHeadCount(req, res) {
     try {
-      const userExisted = await workforceService.Model.find({});
+      const userExisted = await workforceService.Model.find({}).populate("function");
 
       if (userExisted.length == 0)
         return res.status(200).send({
