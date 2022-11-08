@@ -7,9 +7,9 @@ const VanueSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-	location:{
-        type: String,
-    },
+	// location:{
+    //     type: String,
+    // },
     zone:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Zone",

@@ -5,6 +5,7 @@ class Vanues {
   async create(req, res) {
     try {
       let { venuename, zone } = req.body;
+
       if (!(venuename && zone)) {
         return res.send({
           success: false,
@@ -12,7 +13,8 @@ class Vanues {
           message: "All input is required",
         });
       }
-      const dataExisted = await vanuesService.Model.findOne({ venuename });
+      const dataExisted = await vanuesService.Model.findOne({ venuename });    
+
       if (dataExisted)
         return res.send({
           success: true,
@@ -20,10 +22,12 @@ class Vanues {
           message: "department already existed",
         });
 
-      const data = await vanuesService.Model.create(req.body);
-      const zone1 = await zoneService.Model.findById(req.body.zone);
+      const data = await vanuesService.Model.create({zone,venuename});
+
+      const zone1 = await zoneService.Model.findById(zone);
+      console.log(zone1, data);
       await zoneService.Model.updateOne(
-        { _id: req.body.zone },
+        { _id: zone },
         { venuesunder: zone1.venuesunder + 1 }
       );
       res.status(200).send({
@@ -33,7 +37,10 @@ class Vanues {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      console.log(error);
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -55,7 +62,9 @@ class Vanues {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -78,7 +87,9 @@ class Vanues {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -96,19 +107,19 @@ class Vanues {
 
       if (req.body.zone) {
         const zone = await zoneService.Model.findById(req.body.zone);
-        console.log(zone.name);
 
         await zoneService.Model.updateOne(
           { _id: req.body.zone },
           { venuesunder: zone.venuesunder + 1 }
         );
         const zone1 = await zoneService.Model.findById(data.zone);
-        console.log(zone1.name);
 
-        await zoneService.Model.updateOne(
-          { _id: data.zone },
-          { venuesunder: zone1.venuesunder - 1 }
-        );
+        if (zone1) {
+          await zoneService.Model.updateOne(
+            { _id: data.zone },
+            { venuesunder: zone1.venuesunder - 1 }
+          );
+        }
       }
       data = await vanuesService.Model.findOneAndUpdate({ _id: id }, req.body, {
         new: true,
@@ -121,7 +132,9 @@ class Vanues {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
@@ -129,7 +142,7 @@ class Vanues {
     try {
       let { id } = req.params;
 
-      let data = await vanuesService.Model.findById(id, { _id: 1 });
+      let data = await vanuesService.Model.findById(id, { _id: 1, zone: 1 });
       if (!data)
         return res.send({
           success: true,
@@ -152,7 +165,9 @@ class Vanues {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 }
