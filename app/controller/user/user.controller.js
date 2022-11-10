@@ -16,19 +16,24 @@ class Users {
           status: 200,
           message: "user already existed",
         });
-      req.body.percentage = parseFloat((Object.keys(req.body).length / 18) * 100).toFixed(2);
+      req.body.percentage = parseFloat(
+        (Object.keys(req.body).length / 18) * 100
+      ).toFixed(2);
       if (req.body.percentage == 100) {
         req.body.status = "active";
       } else {
         req.body.status = "inactive";
       }
-      
-      const result = await workforceService.Model.create(req.body);
-      
-      const data = await workforceService.Model.findOneAndUpdate({_id:result._id},{employeeid:result._id.toString().slice(-5)},{
-        new: true,
-      });
 
+      const result = await workforceService.Model.create(req.body);
+
+      const data = await workforceService.Model.findOneAndUpdate(
+        { _id: result._id },
+        { employeeid: result._id.toString().slice(-5) },
+        {
+          new: true,
+        }
+      );
 
       res.status(200).send({
         status: 200,
@@ -37,7 +42,7 @@ class Users {
         data,
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res
         .status(500)
         .send({ status: 500, success: false, message: error.message });
@@ -49,7 +54,7 @@ class Users {
       req.query = Object.fromEntries(
         Object.entries(req.query).filter(([_, v]) => v != "")
       );
-      const data = await workforceService.Model.find(req.query)
+      const data = await workforceService.Model.find(req.query);
       if (data.length == 0) {
         return res.status(200).send({
           status: 200,
@@ -174,7 +179,7 @@ class Users {
         .send({ status: 500, success: false, message: error.message });
     }
   }
-  
+
   async update(req, res) {
     try {
       let { id } = req.params;
@@ -187,11 +192,13 @@ class Users {
           message: "invalid id",
         });
 
-      
-        
-      data = await workforceService.Model.findOneAndUpdate({ _id: id }, req.body, {
-        new: true,
-      });
+      data = await workforceService.Model.findOneAndUpdate(
+        { _id: id },
+        req.body,
+        {
+          new: true,
+        }
+      );
 
       res.status(200).send({
         status: 200,
@@ -200,13 +207,17 @@ class Users {
         data,
       });
     } catch (error) {
-      res.status(500).send({ status: 500, success: false, message: error.message });
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
     }
   }
 
   async getAllHeadCount(req, res) {
     try {
-      const userExisted = await workforceService.Model.find({}).populate("function");
+      const userExisted = await workforceService.Model.find({}).populate(
+        "function"
+      );
 
       if (userExisted.length == 0)
         return res.status(200).send({
@@ -228,6 +239,7 @@ class Users {
         .send({ status: 500, success: false, message: error.message });
     }
   }
+
   async imageupload(req, res) {
     try {
       res.status(200).json({
@@ -316,7 +328,7 @@ class Users {
         B: "lastName",
         C: "email",
         D: "password",
-        E: "dataOfBirth",
+        E: "dateOfBirth",
         F: "phone",
         G: "gender",
         H: "jobtype",
@@ -330,16 +342,26 @@ class Users {
       );
       const data = excelData["Sheet1"];
       const result = await workforceService.Model.insertMany(data);
-
-      await deleteFile(fileName, folder);
-      res.status(200).send({
-        status: 200,
-        success: true,
-        message: "User uploaded Successfully",
-        result,
+      result.map(async (item, index) => {
+        const data = await workforceService.Model.findOneAndUpdate(
+          { _id: item._id },
+          { employeeid: item._id.toString().slice(-5) },
+          {
+            new: true,
+          }
+        );
+        if (index == result.length - 1) {
+          await deleteFile(fileName, folder);
+          res.status(200).send({
+            status: 200,
+            success: true,
+            message: "User uploaded Successfully",
+            result,
+          });
+        }
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       await deleteFile(fileName, folder);
       res
         .status(500)
