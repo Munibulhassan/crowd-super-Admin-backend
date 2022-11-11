@@ -13,7 +13,7 @@ const PositionSchema = new mongoose.Schema(
     },
     workforcetype: {
       type: String,
-      enum: ["Contractor", "Permanent"],
+      enum: ["Contractor", "Paid Staff"],
     },
 
     jobTitle: {

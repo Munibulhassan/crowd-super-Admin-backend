@@ -9,6 +9,7 @@ const excelToMongoConstant = require("../../../constants/excelToMongo.constant")
 const fs = require("fs");
 
 class Positions {
+ 
   async create(req, res) {
     try {
       const { functionarea, venue, jobTitle, workforcetype } = req.body;
@@ -75,19 +76,19 @@ class Positions {
           message: "no data found",
           data: [],
         });
-      const filterdata = data.sort(function(a, b) {
+      const filterdata = data.sort(function (a, b) {
         var textA = a.functionarea.functionalarea.toUpperCase();
         var textB = b.functionarea.functionalarea.toUpperCase();
-        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    });
-console.log(filterdata)
+        return textA < textB ? -1 : textA > textB ? 1 : 0;
+      });
+      console.log(filterdata);
 
       res.status(200).send({
         status: 200,
         success: true,
         message: "Fetched Successfully",
         count: data.length,
-    data: filterdata,
+        data: filterdata,
       });
     } catch (error) {
       res

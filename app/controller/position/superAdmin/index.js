@@ -25,6 +25,7 @@ positionsRouter.get("/get/:id",
     positionsController.get
 );
 
+
 positionsRouter.get("/gets",
     positionsController.gets
 );
