@@ -14,11 +14,11 @@ const UserSchema = new mongoose.Schema(
     email: {
       type: String,
       unique: true,
-      required: true,
+      // required: true,
     },
     password: {
       type: String,
-      required: true,
+      // required: true,
     },
     dateOfBirth: {
       type: Date,
@@ -29,29 +29,23 @@ const UserSchema = new mongoose.Schema(
     venue: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Vanue",
-      
     },
-    function:{
+    functionalarea: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "FA", 
-      
+      ref: "FA",
     },
     position: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Position",
-      
-
     }, //Functional Area / Job Title / Venue
-    
+
     workforcetype: {
       type: String,
-      enum: ["Contractor", "Permanent"],
+      enum: ["Contractor", "Paid Staff"],
     },
     department: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
-      
-      
     },
     profileimage: { type: String },
     status: {
@@ -64,7 +58,7 @@ const UserSchema = new mongoose.Schema(
       enum: ["employee", "super_admin", "super_user", "lead", "client"],
       default: "employee",
     }, //[employee, manager, super_admin, super_user, lead, client]
-    
+
     lead: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -81,10 +75,9 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    employeeid:{
-      type:String,
+    employeeid: {
+      type: String,
       unique: true,
-      
     },
     gender: {
       type: String,
@@ -94,6 +87,10 @@ const UserSchema = new mongoose.Schema(
     percentage: {
       type: Number,
     },
+    editimage:{
+      type:Boolean,
+      default:true
+    }
   },
   {
     timestamps: true,

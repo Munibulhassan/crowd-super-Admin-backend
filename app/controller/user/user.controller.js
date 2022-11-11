@@ -6,13 +6,45 @@ const { deleteFile } = require("../../constants/file.constant");
 class Users {
   async create(req, res) {
     try {
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        dateOfBirth,
+        phone,
+        workforcetype,
+        functionalarea,
+        gender,
+        address,
+      } = req.body;
+      if (
+        !(
+          firstName &&
+          lastName &&
+          email &&
+          password &&
+          dateOfBirth &&
+          phone &&
+          workforcetype &&
+          functionalarea &&
+          gender &&
+          address
+        )
+      ) {
+        return res.send({
+          success: false,
+          status: 200,
+          message: "All input is required",
+        });
+      }
       const userExisted = await workforceService.Model.findOne({
         email: req.body.email,
       });
 
       if (userExisted)
         return res.send({
-          success: true,
+          success: false,
           status: 200,
           message: "user already existed",
         });
@@ -29,7 +61,7 @@ class Users {
 
       const data = await workforceService.Model.findOneAndUpdate(
         { _id: result._id },
-        { employeeid: result._id.toString().slice(-5) },
+        { employeeid: result._id.toString().slice(-6) },
         {
           new: true,
         }
@@ -183,14 +215,26 @@ class Users {
   async update(req, res) {
     try {
       let { id } = req.params;
-      let data = await workforceService.Model.findById(id, { _id: 1, zone: 1 });
+      let data = await workforceService.Model.findById(id, {
+        _id: 1,
+        zone: 1,
+        editimage: 1,
+      });
 
-      if (!data)
+      if (!data) {
         return res.send({
-          success: true,
-          status: 403,
+          success: false,
+          status: 200,
           message: "invalid id",
         });
+      }
+      if (req.body.profileimage && data.editimage == false) {
+        return res.send({
+          success: false,
+          status: 200,
+          message: "You can't add image restricted by Super Admin",
+        });
+      }
 
       data = await workforceService.Model.findOneAndUpdate(
         { _id: id },
@@ -216,7 +260,7 @@ class Users {
   async getAllHeadCount(req, res) {
     try {
       const userExisted = await workforceService.Model.find({}).populate(
-        "function"
+        "functionalarea"
       );
 
       if (userExisted.length == 0)
