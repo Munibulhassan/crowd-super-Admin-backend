@@ -90,6 +90,12 @@ const UserSchema = new mongoose.Schema(
     editimage:{
       type:Boolean,
       default:true
+    }, 
+    idnumber: {
+      type: String,
+    },
+    idexpiry: {
+      type: Date,
     }
   },
   {
