@@ -21,11 +21,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }))
 
-// Static rendering
-app.use(express.static("views"));
-app.use('/public', express.static(path.join(appRoot.path, "public")));
-app.set("view engine", "ejs");
-
 app.get("/image/:folder/:image", (req, res) => {
 
     fs.readFile("upload/"+req.params.folder+"/"+req.params.image, function (err, data) {
