@@ -16,7 +16,7 @@ const port = normalizePort(
 app.set("port", port);
 
 app.use('/test', (req, res) => {
-    res.send('api test ...'+ uri.substr(0,12))
+    res.send('api test ...'+ DB_URI.substr(0,12))
 })
 /**
  * Create HTTP server.
