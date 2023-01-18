@@ -14,6 +14,10 @@ const port = normalizePort(
     "4006");
 
 app.set("port", port);
+
+app.use('/test', (req, res) => {
+    res.send('backend is working ...')
+})
 /**
  * Create HTTP server.
  */
@@ -35,8 +39,10 @@ Spinner.setDefaultSpinnerString(19);
 var spinner = new Spinner("Connecting to database.. %s");
 spinner.start();
 
+let onlineDB = 'mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority'
+let localDB = 'mongodb://localhost:27017/test?retryWrites=true&w=majority'
 mongoose
-    .connect("mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority" , {
+    .connect(onlineDB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
