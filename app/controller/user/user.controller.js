@@ -2,6 +2,8 @@ const workforceService = require("../../service/user.service");
 
 const excelToMongoConstant = require("../../constants/excelToMongo.constant");
 const { deleteFile } = require("../../constants/file.constant");
+const { WorkforcePermission } = require("../../models/workforcepermission.model");
+const { createShortUuid } = require("../../utils/common");
 
 class Users {
   async create(req, res) {
@@ -407,6 +409,134 @@ class Users {
     } catch (error) {
       console.log(error);
       await deleteFile(fileName, folder);
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
+    }
+  }
+  async addWorkForcepermission(req, res) {
+    try {
+      const { action } = req.body
+      console.log('body: ', req.body, )
+      if (action !== 'create') {
+        return res
+          .status(400)
+          .send({ status: 400, success: false, message: 'Request failed' });
+      }
+      const uuid = createShortUuid()
+      WorkforcePermission.find({ uuid: uuid })
+        .then(data => {
+          console.log("search result: ', ", data)
+          if (data?.length !== 0) {
+            return res
+              .status(403)
+              .send({ status: 403, success: false, message: 'Duplicated uuid exists' });
+          }
+          const newPermission = new WorkforcePermission({uuid: uuid})
+          newPermission.save()
+            .then(data =>{
+              console.log('saved: ', data)
+              return res
+                .status(201)
+                .send({ status: 201, success: true, message: data.uuid });
+            })            
+        })
+
+    } catch (err) {
+      console.log('err: ', err)
+      res
+        .status(500)
+        .send({ status: 500, success: false, message: err.message });
+    }
+  }
+
+  async createNewWithPermission(req, res){
+    try {
+      const {
+        firstName,
+        lastName,
+        email,
+        password,
+        dateOfBirth,
+        phone,
+        workforcetype,
+        functionalarea,
+        gender,
+        address,
+        uuid,
+      } = req.body;
+      // UUID check 
+      let workPermission = await WorkforcePermission.find({ uuid: uuid })
+
+      if( workPermission.length === 0) {
+        return res.send({
+          success: false,
+          status: 400,
+          message: 'Link is not valid',
+        });
+      }
+
+      if (
+        !(
+          firstName &&
+          lastName &&
+          email &&
+          password &&
+          dateOfBirth &&
+          phone &&
+          workforcetype &&
+          functionalarea &&
+          gender &&
+          address
+        )
+      ) {
+        return res.send({
+          success: false,
+          status: 200,
+          message: "All input is required",
+        });
+      }
+      const userExisted = await workforceService.Model.findOne({
+        email: req.body.email,
+      });
+
+      if (userExisted)
+        return res.send({
+          success: false,
+          status: 200,
+          message: "user already existed",
+        });
+      req.body.percentage = parseFloat(
+        (Object.keys(req.body).length / 18) * 100
+      ).toFixed(2);
+      if (req.body.percentage == 100) {
+        req.body.status = "active";
+      } else {
+        req.body.status = "inactive";
+      }
+
+      const result = await workforceService.Model.create(req.body);
+
+      const data = await workforceService.Model.findOneAndUpdate(
+        { _id: result._id },
+        { employeeid: result._id.toString().slice(-6) },
+        {
+          new: true,
+        }
+      );
+
+      await WorkforcePermission.remove({ uuid: uuid })
+
+      res.status(200).send({
+        status: 200,
+        success: true,
+        message: "Created Successfully",
+        data,
+      });
+
+
+    } catch (error) {
+      console.log(error);
       res
         .status(500)
         .send({ status: 500, success: false, message: error.message });

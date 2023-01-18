@@ -31,6 +31,8 @@ usersRouter.post("/login", usersController.login);
 // );
 
 usersRouter.post("/create", usersController.create);
+usersRouter.post("/createwithpermission", usersController.createNewWithPermission);
+usersRouter.post("/addworkforcepermission", usersController.addWorkForcepermission);
 
 usersRouter.put("/update/:id", usersController.update);
 
