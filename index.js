@@ -7,8 +7,8 @@ var http = require("http");
 var moment = require("moment");
 const mongoose = require("mongoose");
 const config = require('config');
-const uri = config.get('DB');
-console.log(uri)
+const DB_URI = config.get('DB');
+console.log(DB_URI)
 const port = normalizePort(
     process.env.PORT ||
     "4006");
@@ -16,7 +16,7 @@ const port = normalizePort(
 app.set("port", port);
 
 app.use('/test', (req, res) => {
-    res.send('api test ...')
+    res.send('api test ...'+ uri.substr(0,12))
 })
 /**
  * Create HTTP server.
@@ -39,10 +39,8 @@ Spinner.setDefaultSpinnerString(19);
 var spinner = new Spinner("Connecting to database.. %s");
 spinner.start();
 
-let onlineDB = 'mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority'
-let localDB = 'mongodb://localhost:27017/test?retryWrites=true&w=majority'
 mongoose
-    .connect(uri, {
+    .connect(DB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
