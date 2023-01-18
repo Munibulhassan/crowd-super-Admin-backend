@@ -1,4 +1,4 @@
 {
-    "DB": "mongodb://0.0.0.0/Crowd",
-    "origin": "http://localhost:4005"
+    "DB": "mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority",
+    "origin": "http://localhost:4006"
 }

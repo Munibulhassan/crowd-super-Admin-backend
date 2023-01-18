@@ -42,7 +42,7 @@ spinner.start();
 let onlineDB = 'mongodb+srv://Munib:Munib123@cluster0.cgxmzml.mongodb.net/?retryWrites=true&w=majority'
 let localDB = 'mongodb://localhost:27017/test?retryWrites=true&w=majority'
 mongoose
-    .connect(onlineDB, {
+    .connect(uri, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         // useCreateIndex: true,
