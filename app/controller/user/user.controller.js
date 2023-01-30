@@ -5,6 +5,8 @@ const { deleteFile } = require("../../constants/file.constant");
 const { WorkforcePermission } = require("../../models/workforcepermission.model");
 const { createShortUuid } = require("../../utils/common");
 
+const UserPropertyCount = 13
+
 class Users {
   async create(req, res) {
     try {
@@ -53,7 +55,7 @@ class Users {
 
       console.log("Request:", req.body)
       req.body.percentage = parseFloat(
-        (Object.keys(req.body).length / 13) * 100
+        (Object.keys(req.body).length / UserPropertyCount) * 100
       ).toFixed(2);
       if (req.body.percentage == 100) {
         req.body.status = "active";
@@ -344,6 +346,15 @@ class Users {
           message: "invalid id",
         });
 
+      req.body.percentage = parseFloat(
+        (Object.keys(req.body).length / UserPropertyCount) * 100
+      ).toFixed(2);
+      if (req.body.percentage == 100) {
+        req.body.status = "active";
+      } else {
+        req.body.status = "inactive";
+      }
+
       data = await workforceService.Model.findOneAndUpdate(
         { _id: id },
         req.body,
@@ -434,14 +445,14 @@ class Users {
               .status(403)
               .send({ status: 403, success: false, message: 'Duplicated uuid exists' });
           }
-          const newPermission = new WorkforcePermission({uuid: uuid})
+          const newPermission = new WorkforcePermission({ uuid: uuid })
           newPermission.save()
-            .then(data =>{
+            .then(data => {
               console.log('saved: ', data)
               return res
                 .status(201)
                 .send({ status: 201, success: true, message: data.uuid });
-            })            
+            })
         })
 
     } catch (err) {
@@ -470,7 +481,7 @@ class Users {
       // UUID check 
       let workPermission = await WorkforcePermission.find({ uuid: uuid })
 
-      if( workPermission.length === 0) {
+      if (workPermission.length === 0) {
         return res.send({
           success: false,
           status: 400,
@@ -509,7 +520,7 @@ class Users {
           message: "user already existed",
         });
       req.body.percentage = parseFloat(
-        (Object.keys(req.body).length / 13) * 100
+        (Object.keys(req.body).length / (UserPropertyCount+1)) * 100
       ).toFixed(2);
       if (req.body.percentage == 100) {
         req.body.status = "active";
