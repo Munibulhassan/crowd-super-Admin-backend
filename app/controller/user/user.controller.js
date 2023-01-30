@@ -50,8 +50,10 @@ class Users {
           status: 200,
           message: "user already existed",
         });
+
+      console.log("Request:", req.body)
       req.body.percentage = parseFloat(
-        (Object.keys(req.body).length / 18) * 100
+        (Object.keys(req.body).length / 13) * 100
       ).toFixed(2);
       if (req.body.percentage == 100) {
         req.body.status = "active";
@@ -507,7 +509,7 @@ class Users {
           message: "user already existed",
         });
       req.body.percentage = parseFloat(
-        (Object.keys(req.body).length / 18) * 100
+        (Object.keys(req.body).length / 13) * 100
       ).toFixed(2);
       if (req.body.percentage == 100) {
         req.body.status = "active";
