@@ -4,6 +4,7 @@ const excelToMongoConstant = require("../../constants/excelToMongo.constant");
 const { deleteFile } = require("../../constants/file.constant");
 const { WorkforcePermission } = require("../../models/workforcepermission.model");
 const { createShortUuid } = require("../../utils/common");
+const fs = require('fs')
 
 const UserPropertyCount = 13
 
@@ -218,6 +219,8 @@ class Users {
     }
   }
 
+
+
   async update(req, res) {
     try {
       let { id } = req.params;
@@ -263,6 +266,58 @@ class Users {
     }
   }
 
+        // let avatar = req.files.avatar;
+        // if(Array.isArray(avatar)===false){
+        //   avatar = [avatar];
+        // }
+        // len = avatar.length;
+        // let fileNames = [];
+        // for(let i=0;i<len;i++){
+        //   avatar[i].mv("./uploads/" + avatar[i].name);
+        //   fileNames.push(avatar[i].name);
+        // }
+        // Use the mv() method to place the file in upload directory
+  
+
+  async updateProfileById(req, res) {
+    try {
+      let { _id } = req.body;
+      let data = await workforceService.Model.findById(_id);
+      console.log('NewData: ', req.body, req.files)
+      if(data && req.files.profileimage) {
+        console.log("profile", data.profileimage)
+        let newprofilename = new Date().getTime() + req.files.profileimage.name
+        req.files.profileimage.mv(`./upload/profile/${newprofilename}`)
+
+        // Remove old image
+        if( !!data.profileimage && data.profileimage !== 'model.png')
+          fs.unlinkSync(`./upload/profile/${data.profileimage}`)
+
+        data.profileimage = newprofilename
+        await data.save()
+
+        return res.status(200).send({
+          success: true,
+          status: 200,
+          message: newprofilename,
+        });
+      }
+
+      return res.status(400).send({
+          success: false,
+          status: 400,
+          message: "invalid id",
+        });
+
+    } catch (error) {
+      return res
+        .status(500)
+        .send({ status: 500, success: false, message: error.message });
+    }
+  }
+
+
+
   async getAllHeadCount(req, res) {
     try {
       const userExisted = await workforceService.Model.find({}).populate(
@@ -303,6 +358,7 @@ class Users {
         .send({ status: 500, success: false, message: error.message });
     }
   }
+
   async forgotpassword(req, res) {
     try {
       if (!req.body.email) {

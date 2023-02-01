@@ -33,6 +33,7 @@ usersRouter.post("/login", usersController.login);
 usersRouter.post("/create", usersController.create);
 usersRouter.post("/createwithpermission", usersController.createNewWithPermission);
 usersRouter.post("/addworkforcepermission", usersController.addWorkForcepermission);
+usersRouter.post('/updateprofilebyid', usersController.updateProfileById)
 
 usersRouter.put("/update/:id", usersController.update);
 

@@ -47,7 +47,7 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Department",
     },
-    profileimage: { type: String },
+    profileimage: { type: String, default: 'model.png' }, 
     status: {
       type: String,
       enum: ["active", "inactive"],
@@ -89,7 +89,7 @@ const UserSchema = new mongoose.Schema(
     },
     editimage:{
       type:Boolean,
-      default:true
+      default: false
     }, 
     idnumber: {
       type: String,

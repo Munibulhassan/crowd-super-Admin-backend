@@ -6,6 +6,14 @@ const appRoot = require('app-root-path')
 const compression = require('compression');
 var app = express();
 const cors = require("cors");
+const fs = require('fs')
+const fileupload = require("express-fileupload");
+
+app.use(
+  fileupload({
+    createParentPath: true,
+  })
+);
 
 app.use(cors());
 
