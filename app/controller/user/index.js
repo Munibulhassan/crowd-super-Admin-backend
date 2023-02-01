@@ -34,6 +34,7 @@ usersRouter.post("/create", usersController.create);
 usersRouter.post("/createwithpermission", usersController.createNewWithPermission);
 usersRouter.post("/addworkforcepermission", usersController.addWorkForcepermission);
 usersRouter.post('/updateprofilebyid', usersController.updateProfileById)
+usersRouter.post('/insertfromexcel', usersController.insertfromexcel)
 
 usersRouter.put("/update/:id", usersController.update);
 

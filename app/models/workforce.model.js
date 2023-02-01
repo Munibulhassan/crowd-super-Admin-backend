@@ -2,6 +2,7 @@
 const mongoose = require("mongoose");
 
 const mongooseSerial = require("mongoose-serial");
+const { createShortUuid } = require("../utils/common");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -77,7 +78,7 @@ const UserSchema = new mongoose.Schema(
     },
     employeeid: {
       type: String,
-      unique: true,
+      default: "",
     },
     gender: {
       type: String,

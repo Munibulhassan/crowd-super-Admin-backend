@@ -419,6 +419,43 @@ class Users {
         .send({ status: 500, success: false, message: error.message });
     }
   }
+
+  async insertfromexcel(req, res) {
+    try {
+      const { importExcelData: data} = req.body
+      console.log('req: ', typeof data, data)
+
+
+      // this option prevents additional documents from being inserted if one fails
+      const result = await workforceService.Model.insertMany(data, { ordered: true })
+      result.map(async (item, index) => {
+        await workforceService.Model.findOneAndUpdate(
+          { _id: item._id },
+          { employeeid: item._id.toString().slice(-6) },
+          {
+            new: true,
+          }
+        );
+      })
+      
+      return res.status(200).send({
+        status: 200,
+        success: true,
+        message: "Imported Successfully",
+      });
+
+    } catch( err) {
+      console.log("error: ", typeof err)
+      console.log('---------', Object.entries(err))
+      console.log('---------', err?.writeErrors[0]?.err.errmsg)
+      console.log('---------', Object.entries(err.result))
+      console.log('---------')
+      return res
+        .status(500)
+        .send({ status: 500, success: false, message: err?.writeErrors[0]?.err.errmsg ?? "Please check your excel again." });
+    }
+  }
+
   async upload(req, res) {
     const sheetName = "Sheet1";
     const folder = "/upload/";
@@ -456,7 +493,6 @@ class Users {
           }
         );
         if (index == result.length - 1) {
-          await deleteFile(fileName, folder);
           res.status(200).send({
             status: 200,
             success: true,
