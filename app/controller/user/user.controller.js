@@ -265,19 +265,7 @@ class Users {
         .send({ status: 500, success: false, message: error.message });
     }
   }
-
-        // let avatar = req.files.avatar;
-        // if(Array.isArray(avatar)===false){
-        //   avatar = [avatar];
-        // }
-        // len = avatar.length;
-        // let fileNames = [];
-        // for(let i=0;i<len;i++){
-        //   avatar[i].mv("./uploads/" + avatar[i].name);
-        //   fileNames.push(avatar[i].name);
-        // }
-        // Use the mv() method to place the file in upload directory
-  
+ 
 
   async updateProfileById(req, res) {
     try {
@@ -439,14 +427,16 @@ class Users {
     try {
       // return
       const keysMapping = {
-        A: "firstName",
-        B: "lastName",
-        C: "email",
-        D: "password",
-        E: "dateOfBirth",
-        F: "phone",
-        G: "gender",
-        H: "jobtype",
+        A: "email",
+        B: "employeeid",
+        C: "firstName",
+        D: "lastName",
+        E: "phone",
+        F: "role",
+        G: "status",
+        H: "function",
+        I: "dataOfJoining",
+        J: "dateOfBirth",
       };
       let excelData = await excelToMongoConstant.excelToJsonConversion(
         keysMapping,
